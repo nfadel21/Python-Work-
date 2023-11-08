@@ -1,0 +1,56 @@
+supplier_data = '{"parts": ["sprocket", "gizmo", "widget", "dodad"], "sprocket": {"price": 3.99, "quantity": 32}, "gizmo": {"price": 7.98, "quantity": 2}, "widget": {"price": 14.32, "quantity": 4}, "dodad": {"price": 0.5, "quantity": 0}}'
+
+
+# Your code goes here
+import json
+
+supplier_data = json.loads(supplier_data) # Loading available parts and prices from supplier data. 
+
+def main():
+    print("Welcome to the parts ordering system, please enter a part name, followed by a quantity.")
+    print() #Break. 
+    print("Parts for order are:")
+    for part in supplier_data['parts']:
+        print(part)
+    print() #Break. 
+
+    order = {}
+    total_cost = 0 #Initialize the total cost to zero. 
+    while True: #Main Loop. 
+        part_name = input("Please enter in a part name, or quit to exit: ") #Inital Input
+
+        if part_name == "quit": #Finish program, print receipt. 
+            break
+
+        if part_name in supplier_data["parts"]: 
+            quantity_input = input("Please enter in a quantity to order: ") # User input, quantity.
+
+            if quantity_input.isdigit(): #Check if the input is a valid number. 
+                quantity = int(quantity_input)
+
+                if quantity <= supplier_data[part_name]["quantity"]: 
+                    order[part_name] = order.get(part_name, 0) + quantity
+                    supplier_data[part_name]["quantity"] -= quantity
+                    
+                else: 
+                    print(f"Error, only {supplier_data[part_name]['quantity']} of {part_name} are available!") #Error if more than available is ordered by user. 
+
+            else:
+                print("Error, please enter a valid number for quantity.") # Error if anything but a valid number is entered. 
+
+        else: 
+            print("Error, part does not exist, try again")  #Error if part does not exist. 
+
+    print() #Break. 
+    print("Your order") #Receipt. 
+    for part_name, quantity in order.items():
+        part_price = supplier_data[part_name]['price']
+        cost = quantity * part_price
+        print(f"{part_name} - {quantity} @ {part_price:.2f} = {cost:.2f}")
+        total_cost += cost
+    print(f"Total: ${total_cost:.2f}")
+    print() #Break. 
+    print("Thank you for using the parts ordering system!")
+
+if __name__ == "__main__":
+    main()
